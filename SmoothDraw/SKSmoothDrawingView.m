@@ -61,8 +61,6 @@
     float controlX1, controlY1;
     float controlX2, controlY2;
     
-    int  strokeNumber;
-    BOOL drawPreLine;
     CGPoint startPoint;
 }
 @property (nonatomic,strong)NSMutableArray *points;
@@ -75,9 +73,10 @@
 - (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
-        //_points = [[NSMutableArray alloc] init];
         _pointsPool = [[NSMutableArray alloc] init];
-        strokeNumber = -1;
+        self.drawImageView = [[UIImageView alloc] initWithFrame:frame];
+        self.drawImageView.backgroundColor = [UIColor whiteColor];
+        [self addSubview:self.drawImageView];
     }
     return self;
     
@@ -92,21 +91,52 @@
     UITouch* touch=[touches anyObject];
     startPoint = [touch locationInView:self];
     [self addPoint:startPoint];
-    strokeNumber++;
-     [self startDrawWithX:startPoint.x y:startPoint.y];
-    //[self setNeedsDisplay];
+    [self startDrawWithX:startPoint.x y:startPoint.y];
 }
 //触摸移动
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
     NSArray* MovePointArray=[touches allObjects];
     [self addPoint:[[MovePointArray objectAtIndex:0] locationInView:self]];
-    CGPoint latePoint = [[MovePointArray objectAtIndex:0] locationInView:self];
+  
+    UITouch *touch = [touches anyObject];
+    CGPoint currentPoint = [touch locationInView:self];
     
+    UIGraphicsBeginImageContext(self.drawImageView.frame.size);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    [[UIColor darkTextColor] setStroke];
+    
+    [self.drawImageView.image drawInRect:CGRectMake(0, 0, self.drawImageView.frame.size.width, self.drawImageView.frame.size.height)];
+
+    [self drawGraphyWithX:currentPoint.x y:currentPoint.y red:220/255.0
+                    green:91/255.0
+                     blue:44/255.0 drawTip:NO];
+    
+    CGContextStrokePath(context);
+    self.drawImageView.image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+
  //   [self setNeedsDisplay];
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-  //  drawPreLine = YES;
+    UITouch *touch = [touches anyObject];
+    CGPoint currentPoint = [touch locationInView:self];
+    
+    UIGraphicsBeginImageContext(self.drawImageView.frame.size);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    [[UIColor darkTextColor] setStroke];
+    
+    [self.drawImageView.image drawInRect:CGRectMake(0, 0, self.drawImageView.frame.size.width, self.drawImageView.frame.size.height)];
+    
+    [self drawGraphyWithX:currentPoint.x y:currentPoint.y red:220/255.0
+                    green:91/255.0
+                     blue:44/255.0 drawTip:YES];
+    
+    CGContextStrokePath(context);
+    self.drawImageView.image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
 }
 
 - (void)addPoint:(CGPoint)point
@@ -218,7 +248,7 @@
     lastMouseX = x;
     lastMouseY = y;
 }
-
+/*
 - (void)drawRect:(CGRect)rect
 {
     for (int i = 0; i < _pointsPool.count;i++) {
@@ -246,29 +276,11 @@
     
     [super drawRect:rect];
 }
+*/
 
-- (void)drawPreLines
+- (void)reset
 {
-    for (int i = 0; i < _pointsPool.count-1;i++) {
-        NSArray *points = _pointsPool[i];
-        if (points.count > 0 ) {
-            CGPoint point0=[[points objectAtIndex:0] CGPointValue];
-            [self startDrawWithX:point0.x y:point0.y];
-            for (int j = 0; j < [points count]; j++) {
-                CGPoint point=[[points objectAtIndex:j] CGPointValue];
-                [self drawGraphyWithX:point.x
-                                    y:point.y
-                                  red:220/255.0
-                                green:91/255.0
-                                 blue:44/255.0
-                              drawTip:(j == _points.count-1)?YES:NO];
-            }
-            
-            
-        }
-        
-    }
-
+    [self.drawImageView setImage:nil];
 }
 
 /*

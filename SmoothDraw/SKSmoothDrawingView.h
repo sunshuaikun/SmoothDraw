@@ -9,5 +9,6 @@
 #import <UIKit/UIKit.h>
 
 @interface SKSmoothDrawingView : UIView
-
+@property (nonatomic,strong)UIImageView    *drawImageView;
+- (void)reset;
 @end
