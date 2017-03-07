@@ -69,9 +69,6 @@
 
 @implementation SKSmoothDrawingView
 
-
-
-
 #pragma mark - init
 - (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
