@@ -25,13 +25,13 @@
     _drawingView.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:_drawingView];
     
-    UIButton *resetButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-60, SCREEN_HEIGHT-30, 50, 22)];
+    UIButton *resetButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-60, SCREEN_HEIGHT-30, 50, 30)];
     [resetButton setTitle:@"reset" forState:UIControlStateNormal];
     [resetButton setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
     [resetButton addTarget:self action:@selector(reset) forControlEvents:UIControlEventTouchUpInside];
     [_drawingView addSubview:resetButton];
     
-    UIButton *exportButton = [[UIButton alloc] initWithFrame:CGRectMake(10, SCREEN_HEIGHT-30, 60, 22)];
+    UIButton *exportButton = [[UIButton alloc] initWithFrame:CGRectMake(10, SCREEN_HEIGHT-30, 60, 30)];
     [exportButton setTitle:@"export" forState:UIControlStateNormal];
     [exportButton setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
     [exportButton addTarget:self action:@selector(exportImage) forControlEvents:UIControlEventTouchUpInside];
