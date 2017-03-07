@@ -5,9 +5,11 @@
 //  Created by sunshuaikun on 17/3/3.
 //  Copyright © 2017年 sunshuaikun. All rights reserved.
 //
-
+#import <AssetsLibrary/ALAsset.h>
 #import "ViewController.h"
 #import "SKSmoothDrawingView.h"
+#define SCREEN_WIDTH [UIScreen mainScreen].bounds.size.width
+#define SCREEN_HEIGHT [UIScreen mainScreen].bounds.size.height
 @interface ViewController (){
     SKSmoothDrawingView *_drawingView;
 }
@@ -16,25 +18,29 @@
 
 @implementation ViewController
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    // Do any additional setup after loading the view, typically from a nib.
-    _drawingView = [[SKSmoothDrawingView alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width,  [UIScreen mainScreen].bounds.size.height-30)];
+- (void)loadView
+{
+    [super loadView];
+    _drawingView = [[SKSmoothDrawingView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH,  [UIScreen mainScreen].bounds.size.height)];
     _drawingView.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:_drawingView];
     
-    UIButton *resetButton = [[UIButton alloc] initWithFrame:CGRectMake([UIScreen mainScreen].bounds.size.width-60, 22, 50, 22)];
+    UIButton *resetButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-60, SCREEN_HEIGHT-30, 50, 22)];
     [resetButton setTitle:@"reset" forState:UIControlStateNormal];
     [resetButton setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
     [resetButton addTarget:self action:@selector(reset) forControlEvents:UIControlEventTouchUpInside];
     [_drawingView addSubview:resetButton];
     
-   /* UIButton *exportButton = [[UIButton alloc] initWithFrame:CGRectMake(10, 22, 60, 22)];
+    UIButton *exportButton = [[UIButton alloc] initWithFrame:CGRectMake(10, SCREEN_HEIGHT-30, 60, 22)];
     [exportButton setTitle:@"export" forState:UIControlStateNormal];
     [exportButton setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
     [exportButton addTarget:self action:@selector(exportImage) forControlEvents:UIControlEventTouchUpInside];
     [_drawingView addSubview:exportButton];
-    */
+}
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    // Do any additional setup after loading the view, typically from a nib.
 }
 
 - (void)reset
@@ -44,27 +50,28 @@
 
 - (void)exportImage{
     UIImage *image = _drawingView.drawImageView.image;
-    if (image != nil) {
-        UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didExportWithError:contextInfo:), nil);
-    }
-}
-
-- (void)image:(UIImage *)image didExportWithError:(NSError *)error contextInfo:(void *)contextInfo {
-    NSString *message = @"Image successfully saved to photo album";
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:message delegate:nil cancelButtonTitle:nil otherButtonTitles:nil];
+    ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
+    ALAssetsLibraryWriteImageCompletionBlock imageWriteCompletionBlock =
+    ^(NSURL *newURL, NSError *error) {
+        NSString *message = nil;
+        UIAlertAction *alertAction = nil;
+        if (error) {
+            message = [NSString stringWithFormat:@"Error writing image to Photo Library: %@", error];
+            alertAction = [UIAlertAction actionWithTitle:@"done" style:UIAlertActionStyleCancel handler:nil];
+        } else {
+            message = @"Success writing image to Photo Library";
+            alertAction = [UIAlertAction actionWithTitle:@"ok" style:UIAlertActionStyleCancel handler:nil];
+        }
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:message preferredStyle:UIAlertControllerStyleAlert];
+        [alertController addAction:alertAction];
+        [self presentViewController:alertController animated:YES completion:nil];
+    };
     
-    if (error) {
-        message = [NSString stringWithFormat:@"Couldn't save image.\n%@", [error localizedDescription]];
-        [alert setMessage:message];
-        [alert setCancelButtonIndex:[alert addButtonWithTitle:@"Ok"]];
-    } else {
-        [alert setCancelButtonIndex:[alert addButtonWithTitle:@"Done"]];
-    }
-    
-    [alert show];
-    alert = nil;
-}
+    [library writeImageToSavedPhotosAlbum:[image CGImage]
+                                 metadata:nil
+                          completionBlock:imageWriteCompletionBlock];
 
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

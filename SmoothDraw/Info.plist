@@ -34,7 +34,7 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>LSApplicationCategoryType</key>
-	<string></string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>SmoothDraw将保存图片到相册。</string>
 </dict>
 </plist>
