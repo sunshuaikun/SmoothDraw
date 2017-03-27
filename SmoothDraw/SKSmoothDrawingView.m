@@ -115,8 +115,6 @@
     CGContextStrokePath(context);
     self.drawImageView.image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
-
- //   [self setNeedsDisplay];
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -157,7 +155,6 @@
 
 - (void)drawGraphyWithX:(int) x y:(int)y red:(float)red green:(float)green blue:(float)blue drawTip:(BOOL)drawTip
 {
-    
     mouseChangeVectorX = x - lastMouseX;
     mouseChangeVectorY = y - lastMouseY;
     
@@ -203,8 +200,6 @@
     controlY2 = lastSmoothedMouseY - L0Sin0 + controlVecY;
     
     CGContextRef context = UIGraphicsGetCurrentContext();
-    //    CGContextSetLineWidth(context, 1.0);
-    
     CGContextMoveToPoint(context, lastSmoothedMouseX + L0Cos0, lastSmoothedMouseY + L0Sin0);
     CGContextAddQuadCurveToPoint(context, controlX1,controlY1,smoothedMouseX + L1Cos1, smoothedMouseY + L1Sin1);
     CGContextAddLineToPoint(context,smoothedMouseX - L1Cos1, smoothedMouseY - L1Sin1);
@@ -223,7 +218,6 @@
     CGContextSetFillColorWithColor(context, [UIColor colorWithRed:red/255.0f green:green/255.0f blue:blue/255.0f alpha:1.0f].CGColor);
     CGContextFillPath(context);
     
-    
     lastSmoothedMouseX = smoothedMouseX;
     lastSmoothedMouseY = smoothedMouseY;
     lastRotation = lineRotation;
@@ -233,35 +227,6 @@
     lastMouseX = x;
     lastMouseY = y;
 }
-/*
-- (void)drawRect:(CGRect)rect
-{
-    for (int i = 0; i < _pointsPool.count;i++) {
-       // if (i < strokeNumber) {
-       //     continue;
-       // }
-        NSArray *points = _pointsPool[i];
-        if (points.count > 0 ) {
-            CGPoint point0=[[points objectAtIndex:0] CGPointValue];
-            [self startDrawWithX:point0.x y:point0.y];
-            for (int j = 0; j < [points count]; j++) {
-                CGPoint point=[[points objectAtIndex:j] CGPointValue];
-                [self drawGraphyWithX:point.x
-                                    y:point.y
-                                  red:220/255.0
-                                green:91/255.0
-                                 blue:44/255.0
-                              drawTip:(j == _points.count-1)?YES:NO];
-                
-            }
-            
-        }
-
-    }
-    
-    [super drawRect:rect];
-}
-*/
 
 - (void)reset
 {
