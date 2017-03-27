@@ -220,7 +220,6 @@
         CGContextAddLineToPoint(context, smoothedMouseX + L1Cos1, smoothedMouseY + L1Sin1);
     }
     
-    
     CGContextSetFillColorWithColor(context, [UIColor colorWithRed:red/255.0f green:green/255.0f blue:blue/255.0f alpha:1.0f].CGColor);
     CGContextFillPath(context);
     
