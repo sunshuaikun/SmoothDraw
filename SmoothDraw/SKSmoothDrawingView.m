@@ -213,20 +213,6 @@
     
     //画笔锋部分
     if (drawTip) {
-        //椭圆部分
-        float taperThickness = KtipTaperFactor*lineThickness;
-        
-        CGMutablePathRef pathRef = CGPathCreateMutable();
-        CGContextSetRGBStrokeColor(context,red/255.0, green/255.0, blue/255.0, 1.0f);
-        
-        CGPathAddEllipseInRect(pathRef,
-                               &CGAffineTransformIdentity,
-                               CGRectMake(x - taperThickness, y - taperThickness, 2*taperThickness, 2*taperThickness));
-        CGContextAddPath(context, pathRef);
-        CGContextDrawPath(context,kCGPathFillStroke);
-        CGPathRelease(pathRef);
-        
-        //四边形部分
         CGContextMoveToPoint(context, smoothedMouseX + L1Cos1, smoothedMouseY + L1Sin1);
         CGContextAddLineToPoint(context, x + KtipTaperFactor*L1Cos1, y + KtipTaperFactor*L1Sin1);
         CGContextAddLineToPoint(context, x - KtipTaperFactor*L1Cos1, y - KtipTaperFactor*L1Sin1);
